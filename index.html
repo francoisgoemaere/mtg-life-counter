@@ -692,60 +692,68 @@
                     <div className="flex-1 overflow-hidden p-2">
                         <div className="h-full relative">
                             {players.map((player, playerIndex) => {
-                                // Determine position classes and rotation based on numPlayers and playerIndex
-                                let positionClasses = '';
-                                let widthClasses = '';
+                                // Calculate positioning and sizing based on numPlayers and playerIndex
+                                let positionStyle = {};
+                                let widthStyle = {};
                                 let transformStyle = '';
                                 
                                 if (numPlayers === 2) {
-                                    // 2 players: Bottom (0) and Top (1)
+                                    // 2 players: Bottom (0) and Top (1) - each takes ~50% of width
+                                    const width = 'calc(50% - 16px)';
+                                    widthStyle = { width: width, maxWidth: '400px' };
+                                    
                                     if (playerIndex === 0) {
-                                        positionClasses = 'bottom-2 left-1/2';
-                                        widthClasses = 'w-80';
+                                        positionStyle = { bottom: '8px', left: '50%' };
                                         transformStyle = 'translateX(-50%) rotate(0deg)'; // Bottom faces up
                                     } else {
-                                        positionClasses = 'top-2 left-1/2';
-                                        widthClasses = 'w-80';
+                                        positionStyle = { top: '8px', left: '50%' };
                                         transformStyle = 'translateX(-50%) rotate(180deg)'; // Top faces down
                                     }
                                 } else if (numPlayers === 3) {
-                                    // 3 players: Bottom (0), Top-Left (1), Top-Right (2)
+                                    // 3 players: Bottom (centered), Top-left and Top-right (evenly spaced)
+                                    const width = 'calc(33.333% - 16px)';
+                                    widthStyle = { width: width, maxWidth: '300px' };
+                                    
                                     if (playerIndex === 0) {
-                                        positionClasses = 'bottom-2 left-1/2';
-                                        widthClasses = 'w-80';
+                                        // Bottom player - centered
+                                        positionStyle = { bottom: '8px', left: '50%' };
                                         transformStyle = 'translateX(-50%) rotate(0deg)'; // Bottom faces up
                                     } else if (playerIndex === 1) {
-                                        positionClasses = 'top-2 left-2';
-                                        widthClasses = 'w-64';
-                                        transformStyle = 'rotate(135deg)'; // Top-Left faces diagonally outward
+                                        // Top-left player - center at 25%
+                                        positionStyle = { top: '8px', left: '25%' };
+                                        transformStyle = 'translateX(-50%) rotate(180deg)'; // Top faces down
                                     } else {
-                                        positionClasses = 'top-2 right-2';
-                                        widthClasses = 'w-64';
-                                        transformStyle = 'rotate(-135deg)'; // Top-Right faces diagonally outward
+                                        // Top-right player - center at 75%
+                                        positionStyle = { top: '8px', left: '75%' };
+                                        transformStyle = 'translateX(-50%) rotate(180deg)'; // Top faces down
                                     }
                                 } else {
-                                    // 4 players: Bottom (0), Top (1), Left (2), Right (3)
+                                    // 4 players: Bottom, Top, Left, Right - equal space on each edge
                                     if (playerIndex === 0) {
-                                        positionClasses = 'bottom-2 left-1/2';
-                                        widthClasses = 'w-80';
+                                        // Bottom player
+                                        widthStyle = { width: 'calc(50% - 16px)', maxWidth: '400px' };
+                                        positionStyle = { bottom: '8px', left: '50%' };
                                         transformStyle = 'translateX(-50%) rotate(0deg)'; // Bottom faces up
                                     } else if (playerIndex === 1) {
-                                        positionClasses = 'top-2 left-1/2';
-                                        widthClasses = 'w-80';
+                                        // Top player
+                                        widthStyle = { width: 'calc(50% - 16px)', maxWidth: '400px' };
+                                        positionStyle = { top: '8px', left: '50%' };
                                         transformStyle = 'translateX(-50%) rotate(180deg)'; // Top faces down
                                     } else if (playerIndex === 2) {
-                                        positionClasses = 'left-2 top-1/2';
-                                        widthClasses = 'w-64';
+                                        // Left player - width controls vertical dimension after rotation
+                                        widthStyle = { width: 'calc(50% - 48px)', maxWidth: '300px', height: 'auto' };
+                                        positionStyle = { left: '8px', top: '50%' };
                                         transformStyle = 'translateY(-50%) rotate(90deg)'; // Left faces right
                                     } else {
-                                        positionClasses = 'right-2 top-1/2';
-                                        widthClasses = 'w-64';
+                                        // Right player - width controls vertical dimension after rotation
+                                        widthStyle = { width: 'calc(50% - 48px)', maxWidth: '300px', height: 'auto' };
+                                        positionStyle = { right: '8px', top: '50%' };
                                         transformStyle = 'translateY(-50%) rotate(-90deg)'; // Right faces left
                                     }
                                 }
                                 
                                 return (
-                                <div key={playerIndex} className={`absolute ${positionClasses} ${widthClasses} ${playerCardBg} rounded-lg p-3 flex flex-col overflow-hidden`} style={{ transform: transformStyle, transformOrigin: 'center' }}>
+                                <div key={playerIndex} className={`absolute ${playerCardBg} rounded-lg p-3 flex flex-col overflow-hidden`} style={{ ...positionStyle, ...widthStyle, transform: transformStyle, transformOrigin: 'center' }}>
                                     {/* Player Name - Compact */}
                                     <input
                                         type="text"
