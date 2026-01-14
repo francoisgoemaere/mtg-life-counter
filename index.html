@@ -130,6 +130,7 @@
         height: 100%;
         opacity: 0.7;
         mix-blend-mode: screen;
+        transform-origin: center center;
       }
       
       .wave-line-dark {
@@ -147,29 +148,6 @@
         filter: drop-shadow(0 0 3px currentColor);
       }
       
-      .wave-line-1 {
-        top: 15%;
-      }
-      
-      .wave-line-2 {
-        top: 35%;
-      }
-      
-      .wave-line-3 {
-        top: 55%;
-      }
-      
-      .wave-line-4 {
-        top: 75%;
-      }
-      
-      .wave-line-5 {
-        top: 25%;
-      }
-      
-      .wave-line-6 {
-        top: 65%;
-      }
       
       @keyframes gradientShift {
         0% {
@@ -532,6 +510,70 @@
         }
 
         // ============================================================================
+        // RANDOM TRANSFORM HOOK
+        // ============================================================================
+        function useRandomTransform({
+            speedX = 0.0003,
+            speedY = 0.0004,
+            speedRotation = 0.00025,
+            phaseOffsetX = 0,
+            phaseOffsetY = 0,
+            phaseOffsetRotation = 0
+        } = {}) {
+            const [transformValues, setTransformValues] = useState({
+                translateX: '0%',
+                translateY: '0%',
+                rotate: '0deg'
+            });
+
+            useEffect(() => {
+                let animationFrameId;
+                let startTime = Date.now();
+
+                const animate = () => {
+                    const currentTime = Date.now() - startTime;
+                    
+                    // Generate smooth random values using sine/cosine combinations
+                    // Position X: -20% to 120% (140% range, centered at 50%)
+                    const tX1 = currentTime * speedX + phaseOffsetX;
+                    const tX2 = currentTime * speedX * 1.3 + phaseOffsetX + Math.PI * 0.5;
+                    const translateX = 50 + (Math.sin(tX1) * 0.6 + Math.cos(tX2) * 0.4) * 70;
+                    
+                    // Position Y: -20% to 120% (140% range, centered at 50%)
+                    const tY1 = currentTime * speedY + phaseOffsetY;
+                    const tY2 = currentTime * speedY * 1.7 + phaseOffsetY + Math.PI * 0.3;
+                    const translateY = 50 + (Math.sin(tY1) * 0.5 + Math.cos(tY2) * 0.5) * 70;
+                    
+                    // Rotation: -45° to 45°
+                    const tR1 = currentTime * speedRotation + phaseOffsetRotation;
+                    const tR2 = currentTime * speedRotation * 1.5 + phaseOffsetRotation + Math.PI * 0.4;
+                    const rotate = (Math.sin(tR1) * 0.6 + Math.cos(tR2) * 0.4) * 45;
+                    
+                    setTransformValues({
+                        translateX: `${translateX}%`,
+                        translateY: `${translateY}%`,
+                        rotate: `${rotate}deg`
+                    });
+                    
+                    animationFrameId = requestAnimationFrame(animate);
+                };
+
+                // Start animation
+                animationFrameId = requestAnimationFrame(animate);
+
+                return () => {
+                    if (animationFrameId) {
+                        cancelAnimationFrame(animationFrameId);
+                    }
+                };
+            }, [speedX, speedY, speedRotation, phaseOffsetX, phaseOffsetY, phaseOffsetRotation]);
+
+            return {
+                transform: `translate(${transformValues.translateX}, ${transformValues.translateY}) rotate(${transformValues.rotate})`
+            };
+        }
+
+        // ============================================================================
         // ANIMATED BACKGROUND COMPONENT
         // ============================================================================
         function AnimatedBackground({ darkMode }) {
@@ -542,7 +584,7 @@
                 height: 200,
                 baseY: 100,
                 amplitude: 52,
-                frequency: 0.0023,
+                frequency: 0.0005,
                 phaseOffset: 0.3,
                 segments: 9
             });
@@ -553,7 +595,7 @@
                 height: 200,
                 baseY: 100,
                 amplitude: 72,
-                frequency: 0.0014,
+                frequency: 0.0008,
                 phaseOffset: Math.PI * 0.47,
                 segments: 7
             });
@@ -564,7 +606,7 @@
                 height: 200,
                 baseY: 100,
                 amplitude: 38,
-                frequency: 0.0031,
+                frequency: 0.0006,
                 phaseOffset: Math.PI * 0.73,
                 segments: 11
             });
@@ -575,7 +617,7 @@
                 height: 200,
                 baseY: 100,
                 amplitude: 58,
-                frequency: 0.0017,
+                frequency: 0.0009,
                 phaseOffset: Math.PI * 1.23,
                 segments: 8
             });
@@ -586,7 +628,7 @@
                 height: 200,
                 baseY: 100,
                 amplitude: 78,
-                frequency: 0.0011,
+                frequency: 0.0007,
                 phaseOffset: Math.PI * 1.67,
                 segments: 6
             });
@@ -597,9 +639,60 @@
                 height: 200,
                 baseY: 100,
                 amplitude: 44,
-                frequency: 0.0028,
+                frequency: 0.001,
                 phaseOffset: Math.PI * 2.41,
                 segments: 10
+            });
+
+            // Generate random transforms for each line with unique parameters for variety
+            // Using different phase offsets to spread initial positions across the screen
+            const transform1 = useRandomTransform({
+                speedX: 0.00025,
+                speedY: 0.0003,
+                speedRotation: 0.0002,
+                phaseOffsetX: 0,
+                phaseOffsetY: -Math.PI * 0.5,
+                phaseOffsetRotation: 0
+            });
+            const transform2 = useRandomTransform({
+                speedX: 0.00035,
+                speedY: 0.00045,
+                speedRotation: 0.0003,
+                phaseOffsetX: Math.PI * 0.5,
+                phaseOffsetY: -Math.PI * 0.2,
+                phaseOffsetRotation: Math.PI * 0.4
+            });
+            const transform3 = useRandomTransform({
+                speedX: 0.00028,
+                speedY: 0.00035,
+                speedRotation: 0.00025,
+                phaseOffsetX: Math.PI * 1.0,
+                phaseOffsetY: Math.PI * 0.1,
+                phaseOffsetRotation: Math.PI * 0.8
+            });
+            const transform4 = useRandomTransform({
+                speedX: 0.00032,
+                speedY: 0.0004,
+                speedRotation: 0.00028,
+                phaseOffsetX: Math.PI * 1.5,
+                phaseOffsetY: Math.PI * 0.4,
+                phaseOffsetRotation: Math.PI * 1.3
+            });
+            const transform5 = useRandomTransform({
+                speedX: 0.0003,
+                speedY: 0.00038,
+                speedRotation: 0.00022,
+                phaseOffsetX: Math.PI * 2.0,
+                phaseOffsetY: Math.PI * 0.7,
+                phaseOffsetRotation: Math.PI * 1.8
+            });
+            const transform6 = useRandomTransform({
+                speedX: 0.00027,
+                speedY: 0.00033,
+                speedRotation: 0.00026,
+                phaseOffsetX: Math.PI * 2.5,
+                phaseOffsetY: Math.PI * 1.0,
+                phaseOffsetRotation: Math.PI * 2.3
             });
 
             return (
@@ -613,7 +706,10 @@
                     <div className="orb orb-6"></div>
                     
                     {/* Curvy Waving Color Lines with Morphing Paths */}
-                    <div className={`wave-line wave-line-1 ${darkMode ? 'wave-line-dark' : ''}`}>
+                    <div 
+                        className={`wave-line ${darkMode ? 'wave-line-dark' : ''}`}
+                        style={transform1}
+                    >
                         <svg viewBox="0 0 1200 200" preserveAspectRatio="none">
                             <path 
                                 d={path1}
@@ -624,7 +720,10 @@
                             />
                         </svg>
                     </div>
-                    <div className={`wave-line wave-line-2 ${darkMode ? 'wave-line-dark' : ''}`}>
+                    <div 
+                        className={`wave-line ${darkMode ? 'wave-line-dark' : ''}`}
+                        style={transform2}
+                    >
                         <svg viewBox="0 0 1200 200" preserveAspectRatio="none">
                             <path 
                                 d={path2}
@@ -635,7 +734,10 @@
                             />
                         </svg>
                     </div>
-                    <div className={`wave-line wave-line-3 ${darkMode ? 'wave-line-dark' : ''}`}>
+                    <div 
+                        className={`wave-line ${darkMode ? 'wave-line-dark' : ''}`}
+                        style={transform3}
+                    >
                         <svg viewBox="0 0 1200 200" preserveAspectRatio="none">
                             <path 
                                 d={path3}
@@ -646,7 +748,10 @@
                             />
                         </svg>
                     </div>
-                    <div className={`wave-line wave-line-4 ${darkMode ? 'wave-line-dark' : ''}`}>
+                    <div 
+                        className={`wave-line ${darkMode ? 'wave-line-dark' : ''}`}
+                        style={transform4}
+                    >
                         <svg viewBox="0 0 1200 200" preserveAspectRatio="none">
                             <path 
                                 d={path4}
@@ -657,7 +762,10 @@
                             />
                         </svg>
                     </div>
-                    <div className={`wave-line wave-line-5 ${darkMode ? 'wave-line-dark' : ''}`}>
+                    <div 
+                        className={`wave-line ${darkMode ? 'wave-line-dark' : ''}`}
+                        style={transform5}
+                    >
                         <svg viewBox="0 0 1200 200" preserveAspectRatio="none">
                             <path 
                                 d={path5}
@@ -668,7 +776,10 @@
                             />
                         </svg>
                     </div>
-                    <div className={`wave-line wave-line-6 ${darkMode ? 'wave-line-dark' : ''}`}>
+                    <div 
+                        className={`wave-line ${darkMode ? 'wave-line-dark' : ''}`}
+                        style={transform6}
+                    >
                         <svg viewBox="0 0 1200 200" preserveAspectRatio="none">
                             <path 
                                 d={path6}
