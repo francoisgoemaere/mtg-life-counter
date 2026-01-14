@@ -2,23 +2,47 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#111827" id="theme-color-meta">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>MTG Life Counter</title>
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-      body { margin: 0; padding: 0; overflow: hidden; }
-      html, body, #root { height: 100%; width: 100%; }
+      html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+      }
+      
+      body { 
+        margin: 0; 
+        padding: 0; 
+        overflow: hidden;
+        min-height: 100vh;
+        min-height: -webkit-fill-available;
+        background-color: #111827;
+        transition: background-color 0.2s;
+      }
+      
+      html, body, #root { 
+        height: 100%; 
+        width: 100%; 
+      }
       
       /* Animated Particle/Bubble Background */
       .animated-background {
         position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
+        top: calc(-1 * env(safe-area-inset-top, 0px));
+        left: calc(-1 * env(safe-area-inset-left, 0px));
+        right: calc(-1 * env(safe-area-inset-right, 0px));
+        bottom: calc(-1 * env(safe-area-inset-bottom, 0px));
+        width: calc(100% + env(safe-area-inset-left, 0px) + env(safe-area-inset-right, 0px));
+        height: calc(100% + env(safe-area-inset-top, 0px) + env(safe-area-inset-bottom, 0px));
         z-index: 0;
         overflow: hidden;
       }
@@ -591,6 +615,15 @@
             const [players, setPlayers] = useState(() => 
                 Array(2).fill(null).map((_, i) => createPlayer(i))
             );
+
+            // Update theme-color meta tag and body background when dark mode changes
+            useEffect(() => {
+                const themeColorMeta = document.getElementById('theme-color-meta');
+                if (themeColorMeta) {
+                    themeColorMeta.setAttribute('content', darkMode ? '#111827' : '#F3F4F6');
+                }
+                document.body.style.backgroundColor = darkMode ? '#111827' : '#F3F4F6';
+            }, [darkMode]);
 
             // Update players when player count changes
             useEffect(() => {
