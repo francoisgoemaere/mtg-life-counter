@@ -181,147 +181,127 @@
       }
       
       
-      /* Liquid Glass Button Styles - Based on After Effects Tutorial */
-      .liquid-glass-button {
-        position: relative;
-        border-radius: 80px;
-        /* Base layer: backdrop blur for glass effect */
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        /* Noise texture via SVG filter */
-        filter: url(#liquid-glass-noise);
-        /* Displacement map for refraction (subtle) */
-        /* Note: Displacement is applied via separate filter if supported */
+      /* Glassmorphism Button Styles */
+      .glass-button {
+        backdrop-filter: blur(50px) saturate(250%) brightness(1.1);
+        -webkit-backdrop-filter: blur(50px) saturate(250%) brightness(1.1);
+        border: 1px solid rgba(255, 255, 255, 0.15);
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        /* 1px outline as mentioned in tutorial */
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        /* Transparent background to eliminate grey appearance */
-        background: transparent;
-        overflow: hidden;
+        box-shadow: 
+          0 8px 32px 0 rgba(0, 0, 0, 0.1),
+          inset 0 1px 0 0 rgba(255, 255, 255, 0.3),
+          inset 0 -1px 0 0 rgba(0, 0, 0, 0.05);
       }
       
-      /* Duplicate layer: black fill with white inner glow (~35px) */
-      .liquid-glass-button::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        border-radius: 80px;
-        /* Transparent background to eliminate grey center */
-        background: transparent;
-        /* Inner glow: white, size ~35px */
-        box-shadow: inset 0 0 35px rgba(255, 255, 255, 0.9);
-        /* Blend mode: normal */
-        mix-blend-mode: normal;
-        pointer-events: none;
-        z-index: -1;
+      .glass-button-dark {
+        backdrop-filter: blur(50px) saturate(250%) brightness(0.95);
+        -webkit-backdrop-filter: blur(50px) saturate(250%) brightness(0.95);
+        background: rgba(0, 0, 0, 0.2);
+        border-color: rgba(255, 255, 255, 0.08);
+        box-shadow: 
+          0 8px 32px 0 rgba(0, 0, 0, 0.4),
+          inset 0 1px 0 0 rgba(255, 255, 255, 0.12),
+          inset 0 -1px 0 0 rgba(0, 0, 0, 0.2);
       }
       
-      /* Dark mode variant */
-      .liquid-glass-button-dark {
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        background: transparent;
-        border-color: rgba(255, 255, 255, 0.15);
-      }
-      
-      .liquid-glass-button-dark::before {
-        background: transparent;
-        box-shadow: inset 0 0 35px rgba(255, 255, 255, 0.7);
-      }
-      
-      /* Light mode variant */
-      .liquid-glass-button-light {
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        background: transparent;
-        border-color: rgba(255, 255, 255, 0.25);
-      }
-      
-      .liquid-glass-button-light::before {
-        background: transparent;
-        box-shadow: inset 0 0 35px rgba(255, 255, 255, 1);
-      }
-      
-      /* Hover states */
-      .liquid-glass-button:hover {
-        transform: translateY(-1px);
-        background: rgba(255, 255, 255, 0.2);
-        border-color: rgba(255, 255, 255, 0.3);
-      }
-      
-      .liquid-glass-button-dark:hover {
-        background: rgba(0, 0, 0, 0.25);
+      .glass-button-light {
+        backdrop-filter: blur(50px) saturate(250%) brightness(1.15);
+        -webkit-backdrop-filter: blur(50px) saturate(250%) brightness(1.15);
+        background: rgba(255, 255, 255, 0.1);
         border-color: rgba(255, 255, 255, 0.2);
+        box-shadow: 
+          0 8px 32px 0 rgba(0, 0, 0, 0.08),
+          inset 0 1px 0 0 rgba(255, 255, 255, 0.4),
+          inset 0 -1px 0 0 rgba(0, 0, 0, 0.03);
       }
       
-      .liquid-glass-button-light:hover {
-        background: rgba(255, 255, 255, 0.25);
-        border-color: rgba(255, 255, 255, 0.35);
+      .glass-button:hover {
+        background: rgba(255, 255, 255, 0.18);
+        border-color: rgba(255, 255, 255, 0.25);
+        transform: translateY(-1px);
+        box-shadow: 
+          0 12px 40px 0 rgba(0, 0, 0, 0.15),
+          inset 0 1px 0 0 rgba(255, 255, 255, 0.4),
+          inset 0 -1px 0 0 rgba(0, 0, 0, 0.08);
       }
       
-      .liquid-glass-button:active {
+      .glass-button-light:hover {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: rgba(255, 255, 255, 0.25);
+        box-shadow: 
+          0 12px 40px 0 rgba(0, 0, 0, 0.12),
+          inset 0 1px 0 0 rgba(255, 255, 255, 0.45),
+          inset 0 -1px 0 0 rgba(0, 0, 0, 0.05);
+      }
+      
+      .glass-button:active {
         transform: translateY(0);
       }
       
-      /* Colored liquid glass buttons for life counters */
-      .liquid-glass-button-red {
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        background: rgba(220, 38, 38, 0.3);
-        border: 1px solid rgba(220, 38, 38, 0.4);
-        filter: url(#liquid-glass-noise);
+      /* Colored glass buttons for life counters */
+      .glass-button-red {
+        backdrop-filter: blur(50px) saturate(250%) brightness(1.1);
+        -webkit-backdrop-filter: blur(50px) saturate(250%) brightness(1.1);
+        background: rgba(220, 38, 38, 0.25);
+        border: 1px solid rgba(220, 38, 38, 0.3);
+        box-shadow: 
+          0 8px 32px 0 rgba(220, 38, 38, 0.2),
+          inset 0 1px 0 0 rgba(255, 255, 255, 0.3),
+          inset 0 -1px 0 0 rgba(0, 0, 0, 0.1);
       }
       
-      .liquid-glass-button-red::before {
-        background: transparent;
-        box-shadow: inset 0 0 35px rgba(255, 255, 255, 0.8);
+      .glass-button-red:hover {
+        background: rgba(220, 38, 38, 0.35);
+        border-color: rgba(220, 38, 38, 0.4);
+        box-shadow: 
+          0 12px 40px 0 rgba(220, 38, 38, 0.3),
+          inset 0 1px 0 0 rgba(255, 255, 255, 0.4),
+          inset 0 -1px 0 0 rgba(0, 0, 0, 0.15);
       }
       
-      .liquid-glass-button-red:hover {
-        transform: translateY(-1px);
-        background: rgba(220, 38, 38, 0.4);
-        border-color: rgba(220, 38, 38, 0.5);
+      .glass-button-green {
+        backdrop-filter: blur(50px) saturate(250%) brightness(1.1);
+        -webkit-backdrop-filter: blur(50px) saturate(250%) brightness(1.1);
+        background: rgba(34, 197, 94, 0.25);
+        border: 1px solid rgba(34, 197, 94, 0.3);
+        box-shadow: 
+          0 8px 32px 0 rgba(34, 197, 94, 0.2),
+          inset 0 1px 0 0 rgba(255, 255, 255, 0.3),
+          inset 0 -1px 0 0 rgba(0, 0, 0, 0.1);
       }
       
-      .liquid-glass-button-green {
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        background: rgba(34, 197, 94, 0.3);
-        border: 1px solid rgba(34, 197, 94, 0.4);
-        filter: url(#liquid-glass-noise);
-      }
-      
-      .liquid-glass-button-green::before {
-        background: transparent;
-        box-shadow: inset 0 0 35px rgba(255, 255, 255, 0.8);
-      }
-      
-      .liquid-glass-button-green:hover {
-        transform: translateY(-1px);
-        background: rgba(34, 197, 94, 0.4);
-        border-color: rgba(34, 197, 94, 0.5);
+      .glass-button-green:hover {
+        background: rgba(34, 197, 94, 0.35);
+        border-color: rgba(34, 197, 94, 0.4);
+        box-shadow: 
+          0 12px 40px 0 rgba(34, 197, 94, 0.3),
+          inset 0 1px 0 0 rgba(255, 255, 255, 0.4),
+          inset 0 -1px 0 0 rgba(0, 0, 0, 0.15);
       }
       
       /* Colored hover effects for +/-5 and commander damage buttons */
-      .liquid-glass-button-hover-red:hover {
-        backdrop-filter: blur(20px) brightness(1.0) contrast(1.0) !important;
-        -webkit-backdrop-filter: blur(20px) brightness(1.0) contrast(1.0) !important;
-        background: rgba(220, 38, 38, 0.35) !important;
-        border-color: rgba(220, 38, 38, 0.45) !important;
+      .glass-button-hover-red:hover {
+        backdrop-filter: blur(50px) saturate(250%) brightness(1.1) !important;
+        -webkit-backdrop-filter: blur(50px) saturate(250%) brightness(1.1) !important;
+        background: rgba(220, 38, 38, 0.3) !important;
+        border-color: rgba(220, 38, 38, 0.35) !important;
         color: white !important;
-        transform: translateY(-1px) !important;
+        box-shadow: 
+          0 8px 32px 0 rgba(220, 38, 38, 0.25),
+          inset 0 1px 0 0 rgba(255, 255, 255, 0.3),
+          inset 0 -1px 0 0 rgba(0, 0, 0, 0.1) !important;
       }
       
-      .liquid-glass-button-hover-green:hover {
-        backdrop-filter: blur(20px) brightness(1.0) contrast(1.0) !important;
-        -webkit-backdrop-filter: blur(20px) brightness(1.0) contrast(1.0) !important;
-        background: rgba(34, 197, 94, 0.35) !important;
-        border-color: rgba(34, 197, 94, 0.45) !important;
+      .glass-button-hover-green:hover {
+        backdrop-filter: blur(50px) saturate(250%) brightness(1.1) !important;
+        -webkit-backdrop-filter: blur(50px) saturate(250%) brightness(1.1) !important;
+        background: rgba(34, 197, 94, 0.3) !important;
+        border-color: rgba(34, 197, 94, 0.35) !important;
         color: white !important;
-        transform: translateY(-1px) !important;
+        box-shadow: 
+          0 8px 32px 0 rgba(34, 197, 94, 0.25),
+          inset 0 1px 0 0 rgba(255, 255, 255, 0.3),
+          inset 0 -1px 0 0 rgba(0, 0, 0, 0.1) !important;
       }
       
       /* Content layer */
@@ -330,46 +310,6 @@
         z-index: 1;
       }
     </style>
-    <!-- SVG Filters for Liquid Glass Effect -->
-    <svg style="position: absolute; width: 0; height: 0;">
-      <defs>
-        <!-- Noise filter for texture (5% noise, no color noise) -->
-        <filter id="liquid-glass-noise" x="0%" y="0%" width="100%" height="100%">
-          <feTurbulence 
-            type="fractalNoise" 
-            baseFrequency="0.9" 
-            numOctaves="4" 
-            result="noise"
-            stitchTiles="stitch"/>
-          <feColorMatrix 
-            in="noise" 
-            type="saturate" 
-            values="0"
-            result="grayscale-noise"/>
-          <feComponentTransfer in="grayscale-noise" result="low-noise">
-            <feFuncA type="discrete" tableValues="0 0.05 0 0.05 0 0.05 0 0.05"/>
-          </feComponentTransfer>
-          <feComposite in="SourceGraphic" in2="low-noise" operator="overlay" result="noisy-source"/>
-        </filter>
-        
-        <!-- Displacement map filter for refraction effect -->
-        <filter id="liquid-glass-displacement" x="-50%" y="-50%" width="200%" height="200%">
-          <feTurbulence 
-            type="fractalNoise" 
-            baseFrequency="0.04" 
-            numOctaves="3" 
-            result="turbulence"
-            stitchTiles="stitch"/>
-          <feDisplacementMap 
-            in="SourceGraphic" 
-            in2="turbulence" 
-            scale="8" 
-            xChannelSelector="R" 
-            yChannelSelector="G"
-            result="displaced"/>
-        </filter>
-      </defs>
-    </svg>
 </head>
 <body>
     <div id="root"></div>
@@ -476,7 +416,7 @@
             text: darkMode ? 'text-white' : 'text-gray-900',
             textSecondary: darkMode ? 'text-gray-400' : 'text-gray-600',
             border: darkMode ? 'border-gray-700' : 'border-gray-300',
-            glassButton: darkMode ? 'liquid-glass-button-dark' : 'liquid-glass-button-light'
+            glassButton: darkMode ? 'glass-button-dark' : 'glass-button-light'
         });
 
         const getGridClasses = (numPlayers) => {
@@ -869,7 +809,7 @@
                     <div className="flex items-center gap-1">
                         <button
                             onClick={onDecrement}
-                            className={`w-5 h-5 rounded liquid-glass-button text-xs flex items-center justify-center ${theme.glassButton}`}
+                            className={`w-5 h-5 rounded glass-button text-xs flex items-center justify-center ${theme.glassButton}`}
                         >
                             −
                         </button>
@@ -878,7 +818,7 @@
                         </span>
                         <button
                             onClick={onIncrement}
-                            className={`w-5 h-5 rounded liquid-glass-button text-xs flex items-center justify-center ${theme.glassButton}`}
+                            className={`w-5 h-5 rounded glass-button text-xs flex items-center justify-center ${theme.glassButton}`}
                         >
                             +
                         </button>
@@ -899,7 +839,7 @@
                     <div className="flex items-center justify-center gap-2">
                         <button
                             onClick={() => onUpdateLife(playerIndex, -LIFE_CHANGE_AMOUNTS.SMALL)}
-                            className="w-10 h-10 rounded-full liquid-glass-button-red text-white flex items-center justify-center text-xl font-bold"
+                            className="w-10 h-10 rounded-full glass-button-red text-white flex items-center justify-center text-xl font-bold"
                         >
                             −
                         </button>
@@ -908,7 +848,7 @@
                         </div>
                         <button
                             onClick={() => onUpdateLife(playerIndex, LIFE_CHANGE_AMOUNTS.SMALL)}
-                            className="w-10 h-10 rounded-full liquid-glass-button-green text-white flex items-center justify-center text-xl font-bold"
+                            className="w-10 h-10 rounded-full glass-button-green text-white flex items-center justify-center text-xl font-bold"
                         >
                             +
                         </button>
@@ -916,13 +856,13 @@
                     <div className="flex gap-1 mt-1 justify-center">
                         <button
                             onClick={() => onUpdateLife(playerIndex, -LIFE_CHANGE_AMOUNTS.LARGE)}
-                            className={`px-2 py-0.5 rounded liquid-glass-button text-xs liquid-glass-button-hover-red ${theme.glassButton}`}
+                            className={`px-2 py-0.5 rounded glass-button text-xs glass-button-hover-red ${theme.glassButton}`}
                         >
                             -5
                         </button>
                         <button
                             onClick={() => onUpdateLife(playerIndex, LIFE_CHANGE_AMOUNTS.LARGE)}
-                            className={`px-2 py-0.5 rounded liquid-glass-button text-xs liquid-glass-button-hover-green ${theme.glassButton}`}
+                            className={`px-2 py-0.5 rounded glass-button text-xs glass-button-hover-green ${theme.glassButton}`}
                         >
                             +5
                         </button>
@@ -955,7 +895,7 @@
                                     <div className="flex items-center gap-1">
                                         <button
                                             onClick={() => onUpdateCommanderDamage(playerIndex, otherIndex, -1)}
-                                            className={`w-5 h-5 rounded liquid-glass-button text-xs flex items-center justify-center liquid-glass-button-hover-red ${theme.glassButton}`}
+                                            className={`w-5 h-5 rounded glass-button text-xs flex items-center justify-center glass-button-hover-red ${theme.glassButton}`}
                                         >
                                             −
                                         </button>
@@ -964,7 +904,7 @@
                                         </span>
                                         <button
                                             onClick={() => onUpdateCommanderDamage(playerIndex, otherIndex, 1)}
-                                            className={`w-5 h-5 rounded liquid-glass-button text-xs flex items-center justify-center liquid-glass-button-hover-green ${theme.glassButton}`}
+                                            className={`w-5 h-5 rounded glass-button text-xs flex items-center justify-center glass-button-hover-green ${theme.glassButton}`}
                                         >
                                             +
                                         </button>
@@ -1063,7 +1003,7 @@
                                 <button
                                     key={num}
                                     onClick={() => onSetNumPlayers(num)}
-                                    className={`px-2 py-1 rounded text-xs liquid-glass-button ${theme.glassButton} ${
+                                    className={`px-2 py-1 rounded text-xs glass-button ${theme.glassButton} ${
                                         numPlayers === num 
                                             ? 'bg-blue-600 bg-opacity-60 text-white border-blue-400 border-opacity-40' 
                                             : ''
@@ -1076,20 +1016,20 @@
                         <div className="flex gap-1">
                             <button
                                 onClick={onToggleDarkMode}
-                                className={`p-1.5 rounded liquid-glass-button ${theme.glassButton}`}
+                                className={`p-1.5 rounded glass-button ${theme.glassButton}`}
                             >
                                 {darkMode ? <Sun /> : <Moon />}
                             </button>
                             <button
                                 onClick={onUndo}
                                 disabled={!canUndo}
-                                className={`p-1.5 rounded liquid-glass-button ${theme.glassButton} disabled:opacity-30`}
+                                className={`p-1.5 rounded glass-button ${theme.glassButton} disabled:opacity-30`}
                             >
                                 <RotateCcw />
                             </button>
                             <button
                                 onClick={onReset}
-                                className={`px-2 py-1.5 rounded liquid-glass-button text-xs ${theme.glassButton}`}
+                                className={`px-2 py-1.5 rounded glass-button text-xs ${theme.glassButton}`}
                             >
                                 Reset
                             </button>
@@ -1103,23 +1043,12 @@
         // MAIN COMPONENT
         // ============================================================================
         function MTGLifeCounter() {
-            // Load effect preference from localStorage (default to 'liquid-glass')
-            const [effectType, setEffectType] = useState(() => {
-                const saved = localStorage.getItem('buttonEffectType');
-                return saved || 'liquid-glass';
-            });
-            
             const [darkMode, setDarkMode] = useState(true);
             const [numPlayers, setNumPlayers] = useState(2);
             const [history, setHistory] = useState([]);
             const [players, setPlayers] = useState(() => 
                 Array(2).fill(null).map((_, i) => createPlayer(i))
             );
-
-            // Save effect preference to localStorage when it changes
-            useEffect(() => {
-                localStorage.setItem('buttonEffectType', effectType);
-            }, [effectType]);
 
             // Update theme-color meta tag and body background when dark mode changes
             useEffect(() => {
