@@ -549,6 +549,7 @@
             phaseOffsetY = 0,
             phaseOffsetRotation = 0
         } = {}) {
+            const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
             const [transformValues, setTransformValues] = useState({
                 translateX: '0%',
                 translateY: '0%',
@@ -565,15 +566,13 @@
                     // Noise-driven drift for gentler, organic motion
                     const tX1 = currentTime * speedX + phaseOffsetX;
                     const tX2 = currentTime * speedX * 0.8 + phaseOffsetX + 11.1;
-                    const translateX = layeredNoise1D(tX1, tX2, 0.7) * 18;
+                    const translateX = clamp(layeredNoise1D(tX1, tX2, 0.7) * 18, -14, 14);
                     
                     const tY1 = currentTime * speedY + phaseOffsetY;
                     const tY2 = currentTime * speedY * 0.85 + phaseOffsetY + 17.4;
-                    const translateY = layeredNoise1D(tY1, tY2, 0.7) * 18;
+                    const translateY = clamp(layeredNoise1D(tY1, tY2, 0.7) * 18, -14, 14);
                     
-                    const tR1 = currentTime * speedRotation + phaseOffsetRotation;
-                    const tR2 = currentTime * speedRotation * 0.9 + phaseOffsetRotation + 23.6;
-                    const rotate = layeredNoise1D(tR1, tR2, 0.65) * 18;
+                    const rotate = (currentTime * speedRotation) + (phaseOffsetRotation * (180 / Math.PI));
                     
                     setTransformValues({
                         translateX: `${translateX}%`,
@@ -610,9 +609,9 @@
                 height: 200,
                 baseY: 100,
                 amplitude: 20,
-                frequency: 0.0005,
+                frequency: 0.00035,
                 phaseOffset: 0.3,
-                segments: 9
+                segments: 7
             });
             
             // Line 2: High amplitude, slow frequency - dramatic sweeping curves
@@ -621,9 +620,9 @@
                 height: 200,
                 baseY: 100,
                 amplitude: 25,
-                frequency: 0.0008,
+                frequency: 0.0005,
                 phaseOffset: Math.PI * 0.47,
-                segments: 7
+                segments: 6
             });
             
             // Line 3: Low amplitude, fast frequency - subtle quick ripples
@@ -632,9 +631,9 @@
                 height: 200,
                 baseY: 100,
                 amplitude: 15,
-                frequency: 0.0006,
+                frequency: 0.0004,
                 phaseOffset: Math.PI * 0.73,
-                segments: 11
+                segments: 7
             });
             
             // Line 4: Medium-high amplitude, medium-slow frequency - flowing waves
@@ -643,9 +642,9 @@
                 height: 200,
                 baseY: 100,
                 amplitude: 22,
-                frequency: 0.0009,
+                frequency: 0.00055,
                 phaseOffset: Math.PI * 1.23,
-                segments: 8
+                segments: 6
             });
             
             // Line 5: Very high amplitude, very slow frequency - dramatic long curves
@@ -654,9 +653,9 @@
                 height: 200,
                 baseY: 100,
                 amplitude: 30,
-                frequency: 0.0007,
+                frequency: 0.00045,
                 phaseOffset: Math.PI * 1.67,
-                segments: 6
+                segments: 5
             });
             
             // Line 6: Low-medium amplitude, fast frequency - quick subtle waves
@@ -665,9 +664,9 @@
                 height: 200,
                 baseY: 100,
                 amplitude: 18,
-                frequency: 0.001,
+                frequency: 0.0006,
                 phaseOffset: Math.PI * 2.41,
-                segments: 10
+                segments: 7
             });
 
             // Generate random transforms for each line with unique parameters for variety
@@ -675,7 +674,7 @@
             const transform1 = useRandomTransform({
                 speedX: 0.00025,
                 speedY: 0.0003,
-                speedRotation: 0.0002,
+                speedRotation: 0.00008,
                 phaseOffsetX: 0,
                 phaseOffsetY: -Math.PI * 0.5,
                 phaseOffsetRotation: 0
@@ -683,7 +682,7 @@
             const transform2 = useRandomTransform({
                 speedX: 0.00035,
                 speedY: 0.00045,
-                speedRotation: 0.0003,
+                speedRotation: 0.00011,
                 phaseOffsetX: Math.PI * 0.5,
                 phaseOffsetY: -Math.PI * 0.2,
                 phaseOffsetRotation: Math.PI * 0.4
@@ -691,7 +690,7 @@
             const transform3 = useRandomTransform({
                 speedX: 0.00028,
                 speedY: 0.00035,
-                speedRotation: 0.00025,
+                speedRotation: 0.00014,
                 phaseOffsetX: Math.PI * 1.0,
                 phaseOffsetY: Math.PI * 0.1,
                 phaseOffsetRotation: Math.PI * 0.8
@@ -699,7 +698,7 @@
             const transform4 = useRandomTransform({
                 speedX: 0.00032,
                 speedY: 0.0004,
-                speedRotation: 0.00028,
+                speedRotation: 0.00017,
                 phaseOffsetX: Math.PI * 1.5,
                 phaseOffsetY: Math.PI * 0.4,
                 phaseOffsetRotation: Math.PI * 1.3
@@ -707,7 +706,7 @@
             const transform5 = useRandomTransform({
                 speedX: 0.0003,
                 speedY: 0.00038,
-                speedRotation: 0.00022,
+                speedRotation: 0.0002,
                 phaseOffsetX: Math.PI * 2.0,
                 phaseOffsetY: Math.PI * 0.7,
                 phaseOffsetRotation: Math.PI * 1.8
@@ -715,7 +714,7 @@
             const transform6 = useRandomTransform({
                 speedX: 0.00027,
                 speedY: 0.00033,
-                speedRotation: 0.00026,
+                speedRotation: 0.00023,
                 phaseOffsetX: Math.PI * 2.5,
                 phaseOffsetY: Math.PI * 1.0,
                 phaseOffsetRotation: Math.PI * 2.3
