@@ -149,38 +149,26 @@
       
       .wave-line-1 {
         top: 15%;
-        animation: waveMove1 9s ease-in-out infinite;
-        animation-delay: -1.5s;
       }
       
       .wave-line-2 {
         top: 35%;
-        animation: waveMove2 13s ease-in-out infinite;
-        animation-delay: -6.2s;
       }
       
       .wave-line-3 {
         top: 55%;
-        animation: waveMove3 7s ease-in-out infinite;
-        animation-delay: 2.8s;
       }
       
       .wave-line-4 {
         top: 75%;
-        animation: waveMove4 11s ease-in-out infinite;
-        animation-delay: -4.7s;
       }
       
       .wave-line-5 {
         top: 25%;
-        animation: waveMove5 15s ease-in-out infinite;
-        animation-delay: -8.3s;
       }
       
       .wave-line-6 {
         top: 65%;
-        animation: waveMove6 6s ease-in-out infinite;
-        animation-delay: 3.5s;
       }
       
       @keyframes gradientShift {
@@ -214,89 +202,6 @@
         }
       }
       
-      @keyframes waveMove1 {
-        0%, 100% {
-          transform: translateX(-8%) translateY(5px);
-        }
-        25% {
-          transform: translateX(12%) translateY(-25px);
-        }
-        50% {
-          transform: translateX(5%) translateY(-15px);
-        }
-        75% {
-          transform: translateX(-15%) translateY(10px);
-        }
-      }
-      
-      @keyframes waveMove2 {
-        0%, 100% {
-          transform: translateX(3%) translateY(-8px);
-        }
-        33% {
-          transform: translateX(-18%) translateY(22px);
-        }
-        66% {
-          transform: translateX(8%) translateY(-12px);
-        }
-      }
-      
-      @keyframes waveMove3 {
-        0%, 100% {
-          transform: translateX(-12%) translateY(0);
-        }
-        20% {
-          transform: translateX(7%) translateY(-18px);
-        }
-        40% {
-          transform: translateX(15%) translateY(8px);
-        }
-        60% {
-          transform: translateX(-5%) translateY(-10px);
-        }
-        80% {
-          transform: translateX(-20%) translateY(15px);
-        }
-      }
-      
-      @keyframes waveMove4 {
-        0%, 100% {
-          transform: translateX(5%) translateY(12px);
-        }
-        30% {
-          transform: translateX(-22%) translateY(-8px);
-        }
-        60% {
-          transform: translateX(10%) translateY(20px);
-        }
-      }
-      
-      @keyframes waveMove5 {
-        0%, 100% {
-          transform: translateX(-6%) translateY(-5px);
-        }
-        25% {
-          transform: translateX(18%) translateY(15px);
-        }
-        50% {
-          transform: translateX(-10%) translateY(-20px);
-        }
-        75% {
-          transform: translateX(12%) translateY(8px);
-        }
-      }
-      
-      @keyframes waveMove6 {
-        0%, 100% {
-          transform: translateX(0%) translateY(10px);
-        }
-        40% {
-          transform: translateX(-25%) translateY(-15px);
-        }
-        80% {
-          transform: translateX(15%) translateY(5px);
-        }
-      }
       
       /* Glassmorphism Button Styles */
       .glass-button {
@@ -543,9 +448,160 @@
         };
 
         // ============================================================================
+        // MORPHING PATH HOOK
+        // ============================================================================
+        function useMorphingPath({ 
+            width = 1200, 
+            height = 200, 
+            baseY = 100, 
+            amplitude = 60, 
+            frequency = 0.002, 
+            phaseOffset = 0,
+            segments = 8 
+        }) {
+            const [pathData, setPathData] = useState('');
+
+            useEffect(() => {
+                let animationFrameId;
+                let startTime = Date.now();
+
+                const generatePath = (time) => {
+                    const path = [];
+                    const segmentWidth = width / segments;
+                    
+                    // Start point
+                    path.push(`M 0,${baseY}`);
+                    
+                    // Generate cubic bezier curves for each segment
+                    for (let i = 0; i < segments; i++) {
+                        const x1 = i * segmentWidth;
+                        const x2 = (i + 0.5) * segmentWidth;
+                        const x3 = (i + 1) * segmentWidth;
+                        
+                        // Calculate control points using sine/cosine waves with time-based animation
+                        const t1 = (x1 * frequency) + (time * 0.0005) + phaseOffset;
+                        const t2 = (x2 * frequency) + (time * 0.0005) + phaseOffset;
+                        const t3 = (x3 * frequency) + (time * 0.0005) + phaseOffset;
+                        
+                        // Use different wave patterns for variety
+                        const wave1 = Math.sin(t1) * amplitude;
+                        const wave2 = Math.cos(t2) * amplitude * 0.8;
+                        const wave3 = Math.sin(t3) * amplitude;
+                        
+                        // Control point 1 (before the curve)
+                        const cp1x = x1 + segmentWidth * 0.3;
+                        const cp1y = baseY + wave1;
+                        
+                        // Control point 2 (after the curve)
+                        const cp2x = x1 + segmentWidth * 0.7;
+                        const cp2y = baseY + wave2;
+                        
+                        // End point
+                        const endX = x3;
+                        const endY = baseY + wave3;
+                        
+                        // Add cubic bezier curve
+                        path.push(`C ${cp1x},${cp1y} ${cp2x},${cp2y} ${endX},${endY}`);
+                    }
+                    
+                    return path.join(' ');
+                };
+
+                const animate = () => {
+                    const currentTime = Date.now() - startTime;
+                    const newPath = generatePath(currentTime);
+                    setPathData(newPath);
+                    animationFrameId = requestAnimationFrame(animate);
+                };
+
+                // Initialize with first frame
+                const initialPath = generatePath(0);
+                setPathData(initialPath);
+                
+                // Start animation
+                animationFrameId = requestAnimationFrame(animate);
+
+                return () => {
+                    if (animationFrameId) {
+                        cancelAnimationFrame(animationFrameId);
+                    }
+                };
+            }, [width, height, baseY, amplitude, frequency, phaseOffset, segments]);
+
+            return pathData;
+        }
+
+        // ============================================================================
         // ANIMATED BACKGROUND COMPONENT
         // ============================================================================
         function AnimatedBackground({ darkMode }) {
+            // Generate morphing paths for each wave line with unique parameters
+            // Line 1: Medium amplitude, medium frequency - smooth flowing waves
+            const path1 = useMorphingPath({
+                width: 1200,
+                height: 200,
+                baseY: 100,
+                amplitude: 52,
+                frequency: 0.0023,
+                phaseOffset: 0.3,
+                segments: 9
+            });
+            
+            // Line 2: High amplitude, slow frequency - dramatic sweeping curves
+            const path2 = useMorphingPath({
+                width: 1200,
+                height: 200,
+                baseY: 100,
+                amplitude: 72,
+                frequency: 0.0014,
+                phaseOffset: Math.PI * 0.47,
+                segments: 7
+            });
+            
+            // Line 3: Low amplitude, fast frequency - subtle quick ripples
+            const path3 = useMorphingPath({
+                width: 1200,
+                height: 200,
+                baseY: 100,
+                amplitude: 38,
+                frequency: 0.0031,
+                phaseOffset: Math.PI * 0.73,
+                segments: 11
+            });
+            
+            // Line 4: Medium-high amplitude, medium-slow frequency - flowing waves
+            const path4 = useMorphingPath({
+                width: 1200,
+                height: 200,
+                baseY: 100,
+                amplitude: 58,
+                frequency: 0.0017,
+                phaseOffset: Math.PI * 1.23,
+                segments: 8
+            });
+            
+            // Line 5: Very high amplitude, very slow frequency - dramatic long curves
+            const path5 = useMorphingPath({
+                width: 1200,
+                height: 200,
+                baseY: 100,
+                amplitude: 78,
+                frequency: 0.0011,
+                phaseOffset: Math.PI * 1.67,
+                segments: 6
+            });
+            
+            // Line 6: Low-medium amplitude, fast frequency - quick subtle waves
+            const path6 = useMorphingPath({
+                width: 1200,
+                height: 200,
+                baseY: 100,
+                amplitude: 44,
+                frequency: 0.0028,
+                phaseOffset: Math.PI * 2.41,
+                segments: 10
+            });
+
             return (
                 <div className={`animated-background ${darkMode ? 'animated-background-dark' : ''}`}>
                     {/* Gradient Orbs */}
@@ -556,11 +612,11 @@
                     <div className="orb orb-5"></div>
                     <div className="orb orb-6"></div>
                     
-                    {/* Curvy Waving Color Lines */}
+                    {/* Curvy Waving Color Lines with Morphing Paths */}
                     <div className={`wave-line wave-line-1 ${darkMode ? 'wave-line-dark' : ''}`}>
                         <svg viewBox="0 0 1200 200" preserveAspectRatio="none">
                             <path 
-                                d="M0,100 Q150,40 300,100 T600,100 T900,100 T1200,100" 
+                                d={path1}
                                 stroke="#ec4899" 
                                 strokeWidth="3" 
                                 fill="none" 
@@ -571,7 +627,7 @@
                     <div className={`wave-line wave-line-2 ${darkMode ? 'wave-line-dark' : ''}`}>
                         <svg viewBox="0 0 1200 200" preserveAspectRatio="none">
                             <path 
-                                d="M0,100 Q200,160 400,100 T800,100 T1200,100" 
+                                d={path2}
                                 stroke="#f472b6" 
                                 strokeWidth="3" 
                                 fill="none" 
@@ -582,7 +638,7 @@
                     <div className={`wave-line wave-line-3 ${darkMode ? 'wave-line-dark' : ''}`}>
                         <svg viewBox="0 0 1200 200" preserveAspectRatio="none">
                             <path 
-                                d="M0,100 Q100,20 200,100 Q300,180 400,100 Q500,20 600,100 T900,100 T1200,100" 
+                                d={path3}
                                 stroke="#2563eb" 
                                 strokeWidth="3" 
                                 fill="none" 
@@ -593,7 +649,7 @@
                     <div className={`wave-line wave-line-4 ${darkMode ? 'wave-line-dark' : ''}`}>
                         <svg viewBox="0 0 1200 200" preserveAspectRatio="none">
                             <path 
-                                d="M0,100 Q250,60 500,100 Q750,140 1000,100 T1200,100" 
+                                d={path4}
                                 stroke="#f472b6" 
                                 strokeWidth="3" 
                                 fill="none" 
@@ -604,7 +660,7 @@
                     <div className={`wave-line wave-line-5 ${darkMode ? 'wave-line-dark' : ''}`}>
                         <svg viewBox="0 0 1200 200" preserveAspectRatio="none">
                             <path 
-                                d="M0,100 Q180,30 360,100 Q540,170 720,100 Q900,30 1080,100 T1200,100" 
+                                d={path5}
                                 stroke="#0ea5e9" 
                                 strokeWidth="3" 
                                 fill="none" 
@@ -615,7 +671,7 @@
                     <div className={`wave-line wave-line-6 ${darkMode ? 'wave-line-dark' : ''}`}>
                         <svg viewBox="0 0 1200 200" preserveAspectRatio="none">
                             <path 
-                                d="M0,100 Q150,150 300,100 Q450,50 600,100 Q750,150 900,100 T1200,100" 
+                                d={path6}
                                 stroke="#60a5fa" 
                                 strokeWidth="3" 
                                 fill="none" 
