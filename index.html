@@ -428,6 +428,24 @@
         // ============================================================================
         // MORPHING PATH HOOK
         // ============================================================================
+        const lerp = (a, b, t) => a + (b - a) * t;
+        const smoothstep = (t) => t * t * (3 - 2 * t);
+        const fract = (x) => x - Math.floor(x);
+        const hash1D = (x) => fract(Math.sin(x) * 43758.5453123);
+        const valueNoise1D = (x) => {
+            const x0 = Math.floor(x);
+            const x1 = x0 + 1;
+            const t = smoothstep(x - x0);
+            const v0 = hash1D(x0);
+            const v1 = hash1D(x1);
+            return lerp(v0, v1, t) * 2 - 1;
+        };
+        const layeredNoise1D = (x, y, mix = 0.7) => {
+            const n1 = valueNoise1D(x);
+            const n2 = valueNoise1D(y);
+            return n1 * mix + n2 * (1 - mix);
+        };
+
         function useMorphingPath({ 
             width = 1200, 
             height = 200, 
@@ -443,9 +461,10 @@
                 let animationFrameId;
                 let startTime = Date.now();
 
-                const generatePath = (time) => {
+                const generatePath = (timeMs) => {
                     const path = [];
                     const segmentWidth = width / segments;
+                    const time = timeMs * 0.00025;
                     
                     // Start point
                     path.push(`M 0,${baseY}`);
@@ -456,15 +475,25 @@
                         const x2 = (i + 0.5) * segmentWidth;
                         const x3 = (i + 1) * segmentWidth;
                         
-                        // Calculate control points using sine/cosine waves with time-based animation
-                        const t1 = (x1 * frequency) + (time * 0.0005) + phaseOffset;
-                        const t2 = (x2 * frequency) + (time * 0.0005) + phaseOffset;
-                        const t3 = (x3 * frequency) + (time * 0.0005) + phaseOffset;
-                        
-                        // Use different wave patterns for variety
-                        const wave1 = Math.sin(t1) * amplitude;
-                        const wave2 = Math.cos(t2) * amplitude * 0.8;
-                        const wave3 = Math.sin(t3) * amplitude;
+                        // Noise-driven control points for more organic motion
+                        const n1 = layeredNoise1D(
+                            x1 * frequency + time + phaseOffset,
+                            x1 * frequency * 2.3 + time * 1.3 + phaseOffset + 9.7,
+                            0.75
+                        );
+                        const n2 = layeredNoise1D(
+                            x2 * frequency + time + phaseOffset + 1.2,
+                            x2 * frequency * 2.1 + time * 1.1 + phaseOffset + 12.4,
+                            0.7
+                        );
+                        const n3 = layeredNoise1D(
+                            x3 * frequency + time + phaseOffset + 2.4,
+                            x3 * frequency * 2.5 + time * 1.4 + phaseOffset + 15.1,
+                            0.72
+                        );
+                        const wave1 = n1 * amplitude;
+                        const wave2 = n2 * amplitude * 0.9;
+                        const wave3 = n3 * amplitude;
                         
                         // Control point 1 (before the curve)
                         const cp1x = x1 + segmentWidth * 0.3;
@@ -533,21 +562,18 @@
                 const animate = () => {
                     const currentTime = Date.now() - startTime;
                     
-                    // Generate smooth random values using sine/cosine combinations
-                    // Position X: -25% to +25% (50% range, centered at 0%)
+                    // Noise-driven drift for gentler, organic motion
                     const tX1 = currentTime * speedX + phaseOffsetX;
-                    const tX2 = currentTime * speedX * 1.3 + phaseOffsetX + Math.PI * 0.5;
-                    const translateX = (Math.sin(tX1) * 0.6 + Math.cos(tX2) * 0.4) * 25;
+                    const tX2 = currentTime * speedX * 0.8 + phaseOffsetX + 11.1;
+                    const translateX = layeredNoise1D(tX1, tX2, 0.7) * 18;
                     
-                    // Position Y: -25% to +25% (50% range, centered at 0%)
                     const tY1 = currentTime * speedY + phaseOffsetY;
-                    const tY2 = currentTime * speedY * 1.7 + phaseOffsetY + Math.PI * 0.3;
-                    const translateY = (Math.sin(tY1) * 0.5 + Math.cos(tY2) * 0.5) * 25;
+                    const tY2 = currentTime * speedY * 0.85 + phaseOffsetY + 17.4;
+                    const translateY = layeredNoise1D(tY1, tY2, 0.7) * 18;
                     
-                    // Rotation: -45° to 45°
                     const tR1 = currentTime * speedRotation + phaseOffsetRotation;
-                    const tR2 = currentTime * speedRotation * 1.5 + phaseOffsetRotation + Math.PI * 0.4;
-                    const rotate = (Math.sin(tR1) * 0.6 + Math.cos(tR2) * 0.4) * 45;
+                    const tR2 = currentTime * speedRotation * 0.9 + phaseOffsetRotation + 23.6;
+                    const rotate = layeredNoise1D(tR1, tR2, 0.65) * 18;
                     
                     setTransformValues({
                         translateX: `${translateX}%`,
