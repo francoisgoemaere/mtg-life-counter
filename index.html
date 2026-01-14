@@ -34,7 +34,7 @@
         width: 100%; 
       }
       
-      /* Animated Particle/Bubble Background */
+      /* Animated Gradient Orbs and Curvy Lines Background */
       .animated-background {
         position: fixed;
         top: calc(-1 * env(safe-area-inset-top, 0px));
@@ -45,34 +45,215 @@
         height: calc(100% + env(safe-area-inset-top, 0px) + env(safe-area-inset-bottom, 0px));
         z-index: 0;
         overflow: hidden;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
+        background-size: 400% 400%;
+        animation: gradientShift 20s ease infinite;
       }
       
-      .bubble {
+      .animated-background-dark {
+        background: linear-gradient(135deg, #1e3a8a 0%, #7c3aed 25%, #ec4899 50%, #0ea5e9 75%, #06b6d4 100%);
+        background-size: 400% 400%;
+      }
+      
+      .orb {
         position: absolute;
         border-radius: 50%;
-        background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1));
-        animation: float linear infinite;
-        opacity: 0.4;
+        filter: blur(80px);
+        opacity: 0.5;
+        animation: floatOrb linear infinite;
       }
       
-      .bubble-dark {
-        background: radial-gradient(circle at 30% 30%, rgba(147, 197, 253, 0.2), rgba(59, 130, 246, 0.1));
+      .orb-1 {
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, rgba(99, 102, 241, 0.8), rgba(99, 102, 241, 0));
+        top: -100px;
+        left: -100px;
+        animation-duration: 25s;
       }
       
-      @keyframes float {
+      .orb-2 {
+        width: 350px;
+        height: 350px;
+        background: radial-gradient(circle, rgba(236, 72, 153, 0.8), rgba(236, 72, 153, 0));
+        bottom: -100px;
+        right: -100px;
+        animation-duration: 30s;
+        animation-delay: -5s;
+      }
+      
+      .orb-3 {
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, rgba(59, 130, 246, 0.8), rgba(59, 130, 246, 0));
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        animation-duration: 35s;
+        animation-delay: -10s;
+      }
+      
+      .orb-4 {
+        width: 280px;
+        height: 280px;
+        background: radial-gradient(circle, rgba(168, 85, 247, 0.8), rgba(168, 85, 247, 0));
+        top: 20%;
+        right: 10%;
+        animation-duration: 28s;
+        animation-delay: -15s;
+      }
+      
+      .orb-5 {
+        width: 320px;
+        height: 320px;
+        background: radial-gradient(circle, rgba(14, 165, 233, 0.8), rgba(14, 165, 233, 0));
+        bottom: 20%;
+        left: 10%;
+        animation-duration: 32s;
+        animation-delay: -20s;
+      }
+      
+      /* Waving Curvy Color Lines */
+      .wave-line {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        opacity: 0.7;
+        mix-blend-mode: screen;
+      }
+      
+      .wave-line-dark {
+        mix-blend-mode: screen;
+        opacity: 0.6;
+      }
+      
+      .wave-line svg {
+        width: 100%;
+        height: 100%;
+        filter: drop-shadow(0 0 2px currentColor);
+      }
+      
+      .wave-line-dark svg {
+        filter: drop-shadow(0 0 3px currentColor);
+      }
+      
+      .wave-line-1 {
+        top: 15%;
+        animation: waveMove1 8s ease-in-out infinite;
+      }
+      
+      .wave-line-2 {
+        top: 35%;
+        animation: waveMove2 10s ease-in-out infinite;
+        animation-delay: -2s;
+      }
+      
+      .wave-line-3 {
+        top: 55%;
+        animation: waveMove3 9s ease-in-out infinite;
+        animation-delay: -4s;
+      }
+      
+      .wave-line-4 {
+        top: 75%;
+        animation: waveMove4 11s ease-in-out infinite;
+        animation-delay: -6s;
+      }
+      
+      .wave-line-5 {
+        top: 25%;
+        animation: waveMove5 7s ease-in-out infinite;
+        animation-delay: -1s;
+      }
+      
+      .wave-line-6 {
+        top: 65%;
+        animation: waveMove6 12s ease-in-out infinite;
+        animation-delay: -3s;
+      }
+      
+      @keyframes gradientShift {
         0% {
-          transform: translateY(100vh) translateX(0) scale(0);
-          opacity: 0;
+          background-position: 0% 50%;
         }
-        10% {
-          opacity: 0.4;
+        50% {
+          background-position: 100% 50%;
         }
-        90% {
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+      
+      @keyframes floatOrb {
+        0% {
+          transform: translate(0, 0) scale(1);
+          opacity: 0.5;
+        }
+        33% {
+          transform: translate(30px, -50px) scale(1.1);
+          opacity: 0.6;
+        }
+        66% {
+          transform: translate(-20px, 30px) scale(0.9);
           opacity: 0.4;
         }
         100% {
-          transform: translateY(-100px) translateX(100px) scale(1);
-          opacity: 0;
+          transform: translate(0, 0) scale(1);
+          opacity: 0.5;
+        }
+      }
+      
+      @keyframes waveMove1 {
+        0%, 100% {
+          transform: translateX(-10%) translateY(0);
+        }
+        50% {
+          transform: translateX(10%) translateY(-20px);
+        }
+      }
+      
+      @keyframes waveMove2 {
+        0%, 100% {
+          transform: translateX(0%) translateY(0);
+        }
+        50% {
+          transform: translateX(-15%) translateY(15px);
+        }
+      }
+      
+      @keyframes waveMove3 {
+        0%, 100% {
+          transform: translateX(-5%) translateY(0);
+        }
+        50% {
+          transform: translateX(5%) translateY(-10px);
+        }
+      }
+      
+      @keyframes waveMove4 {
+        0%, 100% {
+          transform: translateX(0%) translateY(0);
+        }
+        50% {
+          transform: translateX(-10%) translateY(20px);
+        }
+      }
+      
+      @keyframes waveMove5 {
+        0%, 100% {
+          transform: translateX(-8%) translateY(0);
+        }
+        50% {
+          transform: translateX(12%) translateY(-15px);
+        }
+      }
+      
+      @keyframes waveMove6 {
+        0%, 100% {
+          transform: translateX(0%) translateY(0);
+        }
+        50% {
+          transform: translateX(-12%) translateY(10px);
         }
       }
       
@@ -222,10 +403,6 @@
             LARGE: 5
         };
         const SUPPORTED_PLAYER_COUNTS = [2, 3, 4];
-        const BUBBLE_COUNT = 20;
-        const BUBBLE_SIZE_RANGE = { min: 40, max: 120 };
-        const BUBBLE_DURATION_RANGE = { min: 15, max: 35 };
-        const BUBBLE_DELAY_RANGE = { min: 0, max: 5 };
 
         // ============================================================================
         // ICON COMPONENTS
@@ -328,34 +505,82 @@
         // ANIMATED BACKGROUND COMPONENT
         // ============================================================================
         function AnimatedBackground({ darkMode }) {
-            const [bubbles, setBubbles] = useState([]);
-
-            useEffect(() => {
-                const newBubbles = Array.from({ length: BUBBLE_COUNT }, (_, i) => ({
-                    id: i,
-                    size: Math.random() * (BUBBLE_SIZE_RANGE.max - BUBBLE_SIZE_RANGE.min) + BUBBLE_SIZE_RANGE.min,
-                    left: Math.random() * 100,
-                    duration: Math.random() * (BUBBLE_DURATION_RANGE.max - BUBBLE_DURATION_RANGE.min) + BUBBLE_DURATION_RANGE.min,
-                    delay: Math.random() * BUBBLE_DELAY_RANGE.max,
-                }));
-                setBubbles(newBubbles);
-            }, []);
-
             return (
-                <div className="animated-background">
-                    {bubbles.map(bubble => (
-                        <div
-                            key={bubble.id}
-                            className={`bubble ${darkMode ? 'bubble-dark' : ''}`}
-                            style={{
-                                width: `${bubble.size}px`,
-                                height: `${bubble.size}px`,
-                                left: `${bubble.left}%`,
-                                animationDuration: `${bubble.duration}s`,
-                                animationDelay: `${bubble.delay}s`,
-                            }}
-                        />
-                    ))}
+                <div className={`animated-background ${darkMode ? 'animated-background-dark' : ''}`}>
+                    {/* Gradient Orbs */}
+                    <div className="orb orb-1"></div>
+                    <div className="orb orb-2"></div>
+                    <div className="orb orb-3"></div>
+                    <div className="orb orb-4"></div>
+                    <div className="orb orb-5"></div>
+                    
+                    {/* Curvy Waving Color Lines */}
+                    <div className={`wave-line wave-line-1 ${darkMode ? 'wave-line-dark' : ''}`}>
+                        <svg viewBox="0 0 1200 100" preserveAspectRatio="none">
+                            <path 
+                                d="M0,50 Q150,20 300,50 T600,50 T900,50 T1200,50" 
+                                stroke="#6366f1" 
+                                strokeWidth="3" 
+                                fill="none" 
+                                strokeLinecap="round"
+                            />
+                        </svg>
+                    </div>
+                    <div className={`wave-line wave-line-2 ${darkMode ? 'wave-line-dark' : ''}`}>
+                        <svg viewBox="0 0 1200 100" preserveAspectRatio="none">
+                            <path 
+                                d="M0,50 Q200,80 400,50 T800,50 T1200,50" 
+                                stroke="#ec4899" 
+                                strokeWidth="3" 
+                                fill="none" 
+                                strokeLinecap="round"
+                            />
+                        </svg>
+                    </div>
+                    <div className={`wave-line wave-line-3 ${darkMode ? 'wave-line-dark' : ''}`}>
+                        <svg viewBox="0 0 1200 100" preserveAspectRatio="none">
+                            <path 
+                                d="M0,50 Q100,10 200,50 Q300,90 400,50 Q500,10 600,50 T900,50 T1200,50" 
+                                stroke="#3b82f6" 
+                                strokeWidth="3" 
+                                fill="none" 
+                                strokeLinecap="round"
+                            />
+                        </svg>
+                    </div>
+                    <div className={`wave-line wave-line-4 ${darkMode ? 'wave-line-dark' : ''}`}>
+                        <svg viewBox="0 0 1200 100" preserveAspectRatio="none">
+                            <path 
+                                d="M0,50 Q250,30 500,50 Q750,70 1000,50 T1200,50" 
+                                stroke="#a855f7" 
+                                strokeWidth="3" 
+                                fill="none" 
+                                strokeLinecap="round"
+                            />
+                        </svg>
+                    </div>
+                    <div className={`wave-line wave-line-5 ${darkMode ? 'wave-line-dark' : ''}`}>
+                        <svg viewBox="0 0 1200 100" preserveAspectRatio="none">
+                            <path 
+                                d="M0,50 Q180,15 360,50 Q540,85 720,50 Q900,15 1080,50 T1200,50" 
+                                stroke="#0ea5e9" 
+                                strokeWidth="3" 
+                                fill="none" 
+                                strokeLinecap="round"
+                            />
+                        </svg>
+                    </div>
+                    <div className={`wave-line wave-line-6 ${darkMode ? 'wave-line-dark' : ''}`}>
+                        <svg viewBox="0 0 1200 100" preserveAspectRatio="none">
+                            <path 
+                                d="M0,50 Q150,75 300,50 Q450,25 600,50 Q750,75 900,50 T1200,50" 
+                                stroke="#06b6d4" 
+                                strokeWidth="3" 
+                                fill="none" 
+                                strokeLinecap="round"
+                            />
+                        </svg>
+                    </div>
                 </div>
             );
         }
