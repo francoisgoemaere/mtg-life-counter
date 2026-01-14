@@ -85,7 +85,7 @@
 
       /* Glass Background Overlay - Made more transparent to allow animated background visibility */
       .glass-bg-light {
-        background: linear-gradient(135deg, rgba(249, 250, 251, 0.15) 0%, rgba(243, 244, 246, 0.12) 100%);
+        background: linear-gradient(135deg, rgba(249, 250, 251, 0.2) 0%, rgba(243, 244, 246, 0.18) 100%);
         backdrop-filter: blur(40px);
         -webkit-backdrop-filter: blur(40px);
         transition: var(--transition-bg);
@@ -94,7 +94,7 @@
       }
 
       .glass-bg-dark {
-        background: linear-gradient(135deg, rgba(17, 24, 39, 0.18) 0%, rgba(31, 41, 55, 0.15) 100%);
+        background: linear-gradient(135deg, rgba(17, 24, 39, 0.22) 0%, rgba(31, 41, 55, 0.2) 100%);
         backdrop-filter: blur(40px);
         -webkit-backdrop-filter: blur(40px);
         transition: var(--transition-bg);
@@ -440,21 +440,6 @@
         }
       }
 
-      @keyframes gradientMesh3 {
-        0% {
-          transform: translate(0%, 0%) scale(1);
-        }
-        33% {
-          transform: translate(10%, 25%) scale(1.08);
-        }
-        66% {
-          transform: translate(-20%, -5%) scale(0.92);
-        }
-        100% {
-          transform: translate(0%, 0%) scale(1);
-        }
-      }
-
       .animated-bg-light,
       .animated-bg-dark {
         position: fixed;
@@ -590,18 +575,6 @@
             </svg>
         );
 
-        const Maximize = () => (
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
-            </svg>
-        );
-
-        const Minimize = () => (
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"></path>
-            </svg>
-        );
-
         const Users = ({ size = 20 }) => (
             <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
@@ -644,7 +617,6 @@
             const [darkMode, setDarkMode] = useState(true);
             const [numPlayers, setNumPlayers] = useState(2);
             const [history, setHistory] = useState([]);
-            const [isFullscreen, setIsFullscreen] = useState(false);
             const [players, setPlayers] = useState([
                 { 
                     name: 'Player 1', 
@@ -678,30 +650,6 @@
                 });
                 setPlayers(newPlayers);
             }, [numPlayers]);
-
-            // Listen for fullscreen changes
-            useEffect(() => {
-                const handleFullscreenChange = () => {
-                    setIsFullscreen(!!(
-                        document.fullscreenElement ||
-                        document.webkitFullscreenElement ||
-                        document.mozFullScreenElement ||
-                        document.msFullscreenElement
-                    ));
-                };
-
-                document.addEventListener('fullscreenchange', handleFullscreenChange);
-                document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
-                document.addEventListener('mozfullscreenchange', handleFullscreenChange);
-                document.addEventListener('MSFullscreenChange', handleFullscreenChange);
-
-                return () => {
-                    document.removeEventListener('fullscreenchange', handleFullscreenChange);
-                    document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
-                    document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
-                    document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
-                };
-            }, []);
 
             const saveHistory = () => {
                 setHistory([...history, JSON.parse(JSON.stringify(players))]);
@@ -757,37 +705,6 @@
                 }
             };
 
-            const toggleFullscreen = () => {
-                const element = document.documentElement;
-                
-                if (!document.fullscreenElement &&
-                    !document.webkitFullscreenElement &&
-                    !document.mozFullScreenElement &&
-                    !document.msFullscreenElement) {
-                    // Enter fullscreen
-                    if (element.requestFullscreen) {
-                        element.requestFullscreen();
-                    } else if (element.webkitRequestFullscreen) {
-                        element.webkitRequestFullscreen();
-                    } else if (element.mozRequestFullScreen) {
-                        element.mozRequestFullScreen();
-                    } else if (element.msRequestFullscreen) {
-                        element.msRequestFullscreen();
-                    }
-                } else {
-                    // Exit fullscreen
-                    if (document.exitFullscreen) {
-                        document.exitFullscreen();
-                    } else if (document.webkitExitFullscreen) {
-                        document.webkitExitFullscreen();
-                    } else if (document.mozCancelFullScreen) {
-                        document.mozCancelFullScreen();
-                    } else if (document.msExitFullscreen) {
-                        document.msExitFullscreen();
-                    }
-                }
-            };
-
             const bgColor = darkMode ? 'glass-bg-dark' : 'glass-bg-light';
             const cardBg = darkMode ? 'bg-gray-800' : 'bg-white';
             const playerCardBg = darkMode ? 'glass-card-dark' : 'glass-card-light';
@@ -832,12 +749,6 @@
                                     {darkMode ? <Sun /> : <Moon />}
                                 </button>
                                 <button
-                                    onClick={toggleFullscreen}
-                                    className={`p-1.5 rounded ${glassButton} ${textColor}`}
-                                >
-                                    {isFullscreen ? <Minimize /> : <Maximize />}
-                                </button>
-                                <button
                                     onClick={undo}
                                     disabled={history.length === 0}
                                     className={`p-1.5 rounded ${glassButton} ${textColor} disabled:opacity-30 disabled:cursor-not-allowed`}
@@ -854,72 +765,15 @@
                         </div>
                     </div>
 
-                    {/* Players Table Layout - Takes remaining space */}
+                    {/* Players Grid - Takes remaining space */}
                     <div className="flex-1 overflow-hidden p-2 relative z-10">
-                        <div className="h-full relative">
-                            {players.map((player, playerIndex) => {
-                                // Calculate positioning and sizing based on numPlayers and playerIndex
-                                let positionStyle = {};
-                                let widthStyle = {};
-                                let transformStyle = '';
-                                
-                                if (numPlayers === 2) {
-                                    // 2 players: Bottom (0) and Top (1) - each takes ~50% of width
-                                    const width = 'calc(50% - 16px)';
-                                    widthStyle = { width: width, maxWidth: '400px' };
-                                    
-                                    if (playerIndex === 0) {
-                                        positionStyle = { bottom: '8px', left: '50%' };
-                                        transformStyle = 'translateX(-50%) rotate(0deg)'; // Bottom faces up
-                                    } else {
-                                        positionStyle = { top: '8px', left: '50%' };
-                                        transformStyle = 'translateX(-50%) rotate(180deg)'; // Top faces down
-                                    }
-                                } else if (numPlayers === 3) {
-                                    // 3 players: Bottom (centered), Top-left and Top-right (evenly spaced)
-                                    const width = 'calc(33.333% - 16px)';
-                                    widthStyle = { width: width, maxWidth: '300px' };
-                                    
-                                    if (playerIndex === 0) {
-                                        // Bottom player - centered
-                                        positionStyle = { bottom: '8px', left: '50%' };
-                                        transformStyle = 'translateX(-50%) rotate(0deg)'; // Bottom faces up
-                                    } else if (playerIndex === 1) {
-                                        // Top-left player - center at 25%
-                                        positionStyle = { top: '8px', left: '25%' };
-                                        transformStyle = 'translateX(-50%) rotate(180deg)'; // Top faces down
-                                    } else {
-                                        // Top-right player - center at 75%
-                                        positionStyle = { top: '8px', left: '75%' };
-                                        transformStyle = 'translateX(-50%) rotate(180deg)'; // Top faces down
-                                    }
-                                } else {
-                                    // 4 players: Bottom, Top, Left, Right - equal space on each edge
-                                    if (playerIndex === 0) {
-                                        // Bottom player
-                                        widthStyle = { width: 'calc(50% - 16px)', maxWidth: '400px' };
-                                        positionStyle = { bottom: '8px', left: '50%' };
-                                        transformStyle = 'translateX(-50%) rotate(0deg)'; // Bottom faces up
-                                    } else if (playerIndex === 1) {
-                                        // Top player
-                                        widthStyle = { width: 'calc(50% - 16px)', maxWidth: '400px' };
-                                        positionStyle = { top: '8px', left: '50%' };
-                                        transformStyle = 'translateX(-50%) rotate(180deg)'; // Top faces down
-                                    } else if (playerIndex === 2) {
-                                        // Left player - width controls vertical dimension after rotation
-                                        widthStyle = { width: 'calc(50% - 48px)', maxWidth: '300px', height: 'auto' };
-                                        positionStyle = { left: '8px', top: '50%' };
-                                        transformStyle = 'translateY(-50%) rotate(90deg)'; // Left faces right
-                                    } else {
-                                        // Right player - width controls vertical dimension after rotation
-                                        widthStyle = { width: 'calc(50% - 48px)', maxWidth: '300px', height: 'auto' };
-                                        positionStyle = { right: '8px', top: '50%' };
-                                        transformStyle = 'translateY(-50%) rotate(-90deg)'; // Right faces left
-                                    }
-                                }
-                                
-                                return (
-                                <div key={playerIndex} className={`absolute ${playerCardBg} rounded-lg p-3 flex flex-col overflow-hidden`} style={{ ...positionStyle, ...widthStyle, transform: transformStyle, transformOrigin: 'center' }}>
+                        <div className={`h-full grid gap-2 ${
+                            numPlayers === 2 ? 'grid-cols-1 sm:grid-cols-2' : 
+                            numPlayers === 3 ? 'grid-cols-1 sm:grid-cols-3' : 
+                            'grid-cols-2 sm:grid-cols-4'
+                        }`}>
+                            {players.map((player, playerIndex) => (
+                                <div key={playerIndex} className={`${playerCardBg} rounded-lg p-3 flex flex-col overflow-hidden`}>
                                     {/* Player Name - Compact */}
                                     <input
                                         type="text"
@@ -1028,8 +882,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                );
-                            })}
+                            ))}
                         </div>
                     </div>
                 </div>
@@ -1066,6 +919,7 @@
                 </div>
             );
         }
+        
 
         ReactDOM.render(<MTGLifeCounter />, document.getElementById('root'));
     </script>
